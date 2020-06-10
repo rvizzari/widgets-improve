@@ -1,0 +1,99 @@
+<div class="neo-widget widget--google-suggestions">
+  <div
+    class="neo-widget__content neo-widget__content--indented ps-container ps-theme-default ps-active-y"
+  >
+    <md-tabs md-selected="selectedIndex" style="min-height:100% !important">
+      <md-tab md-on-select="onTabChange(selectedIndex)">
+        <md-tab-label>
+          AI Suggestions
+        </md-tab-label>
+        <md-tab-body>
+          <md-content>
+            <md-list flex>
+              <div ng-repeat="suggestion in suggestions">
+                <md-list-item
+                  class="md-2-line md-long-text"
+                  ng-repeat="faqItem in suggestion.faqAnswers"
+                >
+                  <div class="md-list-item-text">
+                    <h3>{{ faqItem.question }}</h3>
+                    <p>{{ faqItem.answer }}</p>
+                  </div>
+                  <md-button
+                    class="md-raised md-secondary"
+                    ng-click="copyToClipboard(faqItem.answer)"
+                    >Send <mat-icon class="aoc-sms"></mat-icon>
+                  </md-button>
+                  <md-divider></md-divider>
+                </md-list-item>
+
+                <md-list-item
+                  class="md-2-line md-long-text"
+                  ng-repeat="articleItem in suggestion.articles"
+                >
+                  <div class="md-list-item-text">
+                    <h3>[Article] &nbsp;&nbsp;{{ articleItem.title }}</h3>
+                    <p>
+                      {{ articleItem.metadata.name }}
+                    </p>
+                  </div>
+                  <a
+                    ng-href="{{ articleItem.metadata.publicLink }}"
+                    target="_blank"
+                  >
+                    <md-button class="md-raised md-primary"
+                      >Open <mat-icon class="aoc-link"></mat-icon></md-button
+                  ></a>
+                  <md-divider></md-divider>
+                </md-list-item>
+              </div>
+            </md-list>
+          </md-content>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab md-on-select="onTabChange(selectedIndex)">
+        <md-tab-label>
+          Topics
+        </md-tab-label>
+        <md-tab-body>
+          <md-content>
+            <md-list>
+              <md-list-item
+                class="md-1-line"
+                ng-repeat="topic in topics track by $index"
+              >
+                <div class="md-list-item-text">
+                  <h4>{{ topic }}</h4>
+                </div>
+                <md-divider ng-if="!$last"></md-divider>
+              </md-list-item>
+            </md-list>
+          </md-content>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab md-on-select="onTabChange(selectedIndex)">
+        <md-tab-label>
+          Sentiments
+        </md-tab-label>
+        <md-tab-body>
+          <md-content>
+            <md-list>
+              <md-list-item
+                class="md-2-line"
+                ng-repeat="sentiment in sentiments"
+              >
+                <div class="md-list-item-text">
+                  <h3>Message: {{ sentiment.message }}</h3>
+                  <h4>Score: {{ sentiment.score }}</h4>
+                </div>
+                <md-divider ng-if="!$last"></md-divider>
+              </md-list-item>
+            </md-list>
+          </md-content>
+        </md-tab-body>
+      </md-tab>
+    </md-tabs>
+  </div>
+</div>

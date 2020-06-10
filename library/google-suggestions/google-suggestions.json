@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Google Suggestions",
+    "description": "Please add widget description here",
+    "tags": "demo, widget, example, other",
+    "library": "library",
+    "version": "1.0.0",
+    "date": "2019-02-01T09:48:14.333Z",
+    "id": "b5793813-1195-4f00-8e3d-377e1d2e8940"
+  },
+  "configuration": {
+    "external": true,
+    "timeout": 5000,
+    "serie": true,
+    "name": "b5793813-1195-4f00-8e3d-377e1d2e8940",
+    "element": "<google-suggestions></google-suggestions>",
+    "icon": "aoc-home",
+    "files": ["google-suggestions/google-suggestions.css", "google-suggestions/google-suggestions.js"]
+  }
+}

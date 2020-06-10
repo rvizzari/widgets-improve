@@ -1,0 +1,11 @@
+.idea/
+.DS_Store
+node_modules/
+build/
+build-all.txt
+bundle/
+library/**/*.css
+library/**/*.js
+manifest.json
+
+.DS_Store

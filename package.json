@@ -1,0 +1,39 @@
+{
+  "name": "library",
+  "version": "1.0.1",
+  "description": "Widget library project with Google Avaya Ai POC",
+  "license": "SEE LICENSE IN README.md",
+  "bugs": "",
+  "dependencies": {
+    "@types/angular-material": "^1.1.67",
+    "angular": "^1.6.10",
+    "concurrently": "^4.1.0",
+    "moment": "^2.24.0",
+    "typescript": "^3.3.3333"
+  },
+  "devDependencies": {
+    "@types/angular": "^1.6.54",
+    "@types/jquery": "^3.3.22",
+    "change-case": "^3.0.1",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-ng-annotate": "^3.0.0",
+    "grunt-sass": "^2.0.0",
+    "grunt-tree": "^1.1.1",
+    "gulp": "^4.0.0",
+    "gulp-less": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.5",
+    "jit-grunt": "^0.10.0",
+    "uuid": "^3.1.0"
+  },
+  "scripts": {
+    "build": "npx gulp build && npx grunt --build=\"googlecc-ai\" && npx grunt --build=\"google-suggestions\"",
+    "deploy": "sh deploy.sh",
+    "watch-tsc": "npx tsc -w",
+    "start": "concurrently --names \"TSC,LESS\" -c \"bgBlue.bold,bgMagenta.bold\" --kill-others \"npm run watch-tsc\" \"npx gulp\""
+  }
+}
