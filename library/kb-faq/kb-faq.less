@@ -1,0 +1,56 @@
+/* Best Practice:
+   This is an example of the 'descendant selector' css rule.
+   This ensures that the style is only applied to this widget and does not impact any other widget.
+*/
+.widget--kb-faq{
+  > div.neo-widget__content {
+    md-list-item{
+      padding-top: 5px!important;
+      padding-bottom: 5px!important;
+    }
+    .suggestion-question{
+      .question{
+        padding-bottom: 5px;
+        font-size: 13px!important;
+        font-weight: bold!important;
+      }
+      .answer{
+        font-size: 15px!important;
+      }
+    }
+    .md-button.md-default-theme.md-primary.md-fab,
+    .md-button.md-primary.md-fab,
+    .md-button.md-default-theme.md-primary.md-raised,
+    .md-button.md-primary.md-raised {
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #0066ff;
+      opacity: 0.5  ;
+      &:hover {
+        background-color: #0066ff;
+        opacity: 1;
+      }
+    }
+
+    .md-2-line {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      margin: 0;
+      &:hover {
+        background-color: rgba(158, 158, 158, 0.2);
+      }
+    }
+
+    .md-button.md-default-theme.md-secondary.md-fab,
+    .md-button.md-secondary.md-fab,
+    .md-button.md-default-theme.md-secondary.md-raised,
+    .md-button.md-secondary.md-raised {
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #d50000;
+      opacity: 0.5;
+      &:hover {
+        background-color: #d50000;
+        opacity: 1;
+      }
+    }
+  }
+}
