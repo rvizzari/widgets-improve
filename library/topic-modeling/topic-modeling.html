@@ -1,0 +1,31 @@
+<!-- /*
+ *
+ * Copyright Avaya Inc., All Rights Reserved.
+ *
+ * THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF Avaya Inc.
+ *
+ * The copyright notice above does not evidence any actual or intended
+ * publication of such source code.
+ *
+ * Some third-party source code components may have  been modified from their
+ * original versions by Avaya Inc.
+ *
+ * The modifications are Copyright Avaya Inc., All Rights Reserved.
+ *
+ */ -->
+
+<div class="neo-widget widget--topic-modeling">
+  <div class="neo-widget__header aoc-home">Topics</div>
+
+  <div class="neo-widget__content neo-widget__content--indented">
+    <md-list flex style="min-height:100% !important">
+      <md-list-item class="md-1-line" ng-repeat="topic in ['Topic Number One', 'Topic Number Two', 'Topic Number Three'] track by $index">
+        <div class="md-list-item-text">
+          <h4>{{ topic }}</h4>
+        </div>
+        <md-divider ng-if="!$last"></md-divider>
+      </md-list-item>
+    </md-list>
+  </div>
+  
+</div>

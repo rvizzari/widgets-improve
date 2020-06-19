@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Topic Modeling",
+    "description": "Please add widget description here",
+    "tags": "Topic, widget, Modeling, other",
+    "library": "library",
+    "version": "1.0.0",
+    "date": "2020-06-11T16:40:51.952Z",
+    "id": "56662337-767f-4852-ae64-70b4594b2384"
+  },
+  "configuration": {
+    "external": true,
+    "timeout": 5000,
+    "serie": true,
+    "name": "56662337-767f-4852-ae64-70b4594b2384",
+    "element": "<topic-modeling></topic-modeling>",
+    "icon": "aoc-home",
+    "files": ["topic-modeling/topic-modeling.css", "topic-modeling/topic-modeling.js"]
+  }
+}
