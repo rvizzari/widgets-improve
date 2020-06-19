@@ -47,11 +47,6 @@ const TopicModelingWidgetComponent = (
       scope.widgetConfig = JSON.parse(localStorage.getItem("widgetConfig"));
     });
 
-    // media message data from chat, sms, email, social
-    api.onDataEvent("onMediaMessageEvent", function (data) {
-      $log.info("Google-Suggestions:: onMediaMessageEvent.", data);
-    });
-
     // triggered when the widget receives a message from another widget
     api.onDataEvent("onMessageEvent", function (data) {
       $log.info("Google-Suggestions:: widget message:", data);
@@ -118,4 +113,4 @@ const TopicModelingWidgetComponent = (
 
 angular.module('56662337-767f-4852-ae64-70b4594b2384', [
   'core.services.WidgetAPI'
-]).directive('kbFaq', TopicModelingWidgetComponent);
+]).directive('TopicModeling', TopicModelingWidgetComponent);
