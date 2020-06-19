@@ -1,0 +1,53 @@
+<!-- /*
+ *
+ * Copyright Avaya Inc., All Rights Reserved.
+ *
+ * THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF Avaya Inc.
+ *
+ * The copyright notice above does not evidence any actual or intended
+ * publication of such source code.
+ *
+ * Some third-party source code components may have  been modified from their
+ * original versions by Avaya Inc.
+ *
+ * The modifications are Copyright Avaya Inc., All Rights Reserved.
+ *
+ */ -->
+
+<div class="neo-widget widget--kb-faq">
+
+  <div class="neo-widget__header aoc-home">suggestions</div>
+
+  <div class="neo-widget__content neo-widget__content--indented">
+    <md-list flex style="min-height:100% !important">
+      <div ng-repeat="suggestion in suggestions">
+        <md-list-item class="md-2-line md-long-text" ng-repeat="faqItem in suggestion.faqAnswers">
+          <div class="md-list-item-text suggestion-question">
+            <h3 class="question">{{ faqItem.question }}</h3>
+            <p class="answer">{{ faqItem.answer }}</p>
+          </div>
+          <md-button class="md-fab md-mini md-secondary" ng-click="copyToClipboard(faqItem.answer)">
+            <mat-icon class="aoc-send-chat"></mat-icon>
+          </md-button>
+          <md-divider></md-divider>
+        </md-list-item>
+
+        <md-list-item class="md-2-line md-long-text" ng-repeat="articleItem in suggestion.articles">
+          <div class="md-list-item-text">
+            <h3>[Article] &nbsp;&nbsp;{{ articleItem.title }}</h3>
+            <p>
+              {{ articleItem.metadata.name }}
+            </p>
+          </div>
+          <a ng-href="{{ articleItem.metadata.publicLink }}" target="_blank">
+            <md-button class="md-raised md-primary">Open <mat-icon class="aoc-link"></mat-icon>
+            </md-button>
+          </a>
+          <md-divider></md-divider>
+        </md-list-item>
+      </div>
+    </md-list>
+
+  </div>
+
+</div>

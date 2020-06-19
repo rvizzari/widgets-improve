@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Kb Faq",
+    "description": "Please add widget description here",
+    "tags": "demo, widget, example, other",
+    "library": "library",
+    "version": "1.0.0",
+    "date": "2020-06-11T16:40:51.952Z",
+    "id": "7f70d5ad-a992-4106-80eb-c2a9e66eb8df"
+  },
+  "configuration": {
+    "external": true,
+    "timeout": 5000,
+    "serie": true,
+    "name": "7f70d5ad-a992-4106-80eb-c2a9e66eb8df",
+    "element": "<kb-faq></kb-faq>",
+    "icon": "aoc-home",
+    "files": ["kb-faq/kb-faq.css", "kb-faq/kb-faq.js"]
+  }
+}
