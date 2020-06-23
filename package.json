@@ -31,7 +31,7 @@
     "uuid": "^3.1.0"
   },
   "scripts": {
-    "build": "npx gulp build && npx grunt --build=\"googlecc-ai\" && npx grunt --build=\"google-suggestions\" && npx grunt --build=\"kb-faq\"",
+    "build": "npx gulp build && npx grunt --build=\"googlecc-ai\" && npx grunt --build=\"google-suggestions\" && npx grunt --build=\"kb-faq\" && npx grunt --build=\"transcript-ai\"",
     "deploy": "sh deploy.sh",
     "watch-tsc": "npx tsc -w",
     "start": "concurrently --names \"TSC,LESS\" -c \"bgBlue.bold,bgMagenta.bold\" --kill-others \"npm run watch-tsc\" \"npx gulp\""

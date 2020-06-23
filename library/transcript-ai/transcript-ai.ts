@@ -431,7 +431,7 @@ const widgetComponent = (
 };
 
 const chatModule = angular
-  .module("1eb3345a-96be-473f-bda6-c6ad149ace82", ["core.services.WidgetAPI"])
+  .module("8a611d35-78b7-4e8e-9d3f-b7bfb99ffa0f", ["core.services.WidgetAPI"])
   .directive("googleccAi", widgetComponent);
 
 chatModule.constant(

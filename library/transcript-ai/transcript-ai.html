@@ -1,8 +1,8 @@
 <div
-  class="widget--google-ai-chat-container"
+  class="widget--transcript-ai-chat-container"
   ng-style="{height:rowColumnHeight}"
 >
-  <div class="neo-widget widget--google-ai-chat">
+  <div class="neo-widget widget--transcript-ai-chat">
     <div class="neo-widget__header aoc-agents">Google Ai Chat</div>
 
     <div
@@ -67,24 +67,4 @@
       <!-- End List of messages -->
     </div>
   </div>
-  <!-- Chat Form -->
-  <div class="form-container">
-    <form
-      class="message-form"
-      novalidate=""
-      autocomplete="off"
-      ng-submit="submitFormData()"
-    >
-      <div class="neo-input-group">
-        <input
-          ng-model="formMessage.value"
-          name="text"
-          class="neo-input"
-          type="text"
-          placeholder="type your message here..."
-        /><button type="submit" class="neo-btn aoc-send-chat">Send</button>
-      </div>
-    </form>
-  </div>
-  <!-- End Chat Form -->
 </div>
