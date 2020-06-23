@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "name": "Transcript Ai",
+    "description": "Please add widget description here",
+    "tags": "demo, widget, example, other",
+    "library": "library",
+    "version": "1.0.0",
+    "date": "2020-06-23T14:15:56.699Z",
+    "id": "8a611d35-78b7-4e8e-9d3f-b7bfb99ffa0f"
+  },
+  "configuration": {
+    "external": true,
+    "timeout": 5000,
+    "serie": true,
+    "name": "8a611d35-78b7-4e8e-9d3f-b7bfb99ffa0f",
+    "element": "<transcript-ai></transcript-ai>",
+    "icon": "aoc-home",
+    "files": ["transcript-ai/transcript-ai.css", "transcript-ai/transcript-ai.js"]
+  }
+}

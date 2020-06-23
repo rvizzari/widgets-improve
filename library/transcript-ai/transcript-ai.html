@@ -1,0 +1,70 @@
+<div
+  class="widget--transcript-ai-chat-container"
+  ng-style="{height:rowColumnHeight}"
+>
+  <div class="neo-widget widget--transcript-ai-chat">
+    <div class="neo-widget__header aoc-agents">Google Ai Chat</div>
+
+    <div
+      id="chat-container"
+      class="neo-widget__content neo-widget__content--indented neo-widget__content-background"
+    >
+      <!-- List of messages -->
+      <ul class="items">
+        <li
+          ng-repeat="message in messages track by $index"
+          ng-class="{'response-role': message.participantRole !== 'HUMAN_AGENT'}"
+        >
+          <div ng-if="showAvatar(message,$index,messages)">
+            <span ng-switch="message.participantRole">
+              <figure
+                ng-switch-when="HUMAN_AGENT"
+                class="neo-avatar neo-avatar--small"
+                title="Agent"
+                style="background: #D50000"
+              ></figure>
+              <figure
+                ng-switch-when="END_USER"
+                class="neo-avatar neo-avatar--small"
+                title="End user"
+                style="background: #0066FF"
+              >
+                <img ng-src="{{ customerImageUrl }}" alt="Description" />
+              </figure>
+              <figure
+                ng-switch-when="AUTOMATED_AGENT"
+                class="neo-avatar neo-avatar--small"
+                title="Chat bot"
+                style="background: #fff"
+              >
+                <img ng-src="{{ automatedBotImageUrl }}" alt="Description" />
+              </figure>
+              <figure
+                ng-switch-default
+                class="neo-avatar neo-avatar--small"
+                title="Other user"
+                style="background: #6A788A"
+              ></figure>
+            </span>
+            <span ng-switch="message.participantRole">
+              <span ng-switch-when="HUMAN_AGENT">Human_Agent</span>
+              <span ng-switch-when="END_USER">Steve Smith</span>
+              <span ng-switch-when="AUTOMATED_AGENT">AUTOMATED_AGENT</span>
+              <span ng-switch-default>Other user</span>
+            </span>
+          </div>
+          <p>{{ message.content }}</p>
+          <p className="date-time">
+            {{
+              moment
+                .utc(message.createTime)
+                .format("h:mm:ss a")
+                .toString()
+            }}
+          </p>
+        </li>
+      </ul>
+      <!-- End List of messages -->
+    </div>
+  </div>
+</div>
