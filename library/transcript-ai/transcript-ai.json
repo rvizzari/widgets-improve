@@ -6,13 +6,13 @@
     "library": "library",
     "version": "1.0.0",
     "date": "2020-06-23T14:15:56.699Z",
-    "id": "8a611d35-78b7-4e8e-9d3f-b7bfb99ffa0f"
+    "id": "b2343c5c-bada-494d-8fb5-be9fd20c292a"
   },
   "configuration": {
     "external": true,
     "timeout": 5000,
     "serie": true,
-    "name": "8a611d35-78b7-4e8e-9d3f-b7bfb99ffa0f",
+    "name": "b2343c5c-bada-494d-8fb5-be9fd20c292a",
     "element": "<transcript-ai></transcript-ai>",
     "icon": "aoc-home",
     "files": ["transcript-ai/transcript-ai.css", "transcript-ai/transcript-ai.js"]
