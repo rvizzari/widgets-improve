@@ -1,4 +1,5 @@
-<!-- /*
+<div class="neo-widget widget--topic-modeling">
+  <!-- /*
  *
  * Copyright Avaya Inc., All Rights Reserved.
  *
@@ -13,13 +14,11 @@
  * The modifications are Copyright Avaya Inc., All Rights Reserved.
  *
  */ -->
-
-<div class="neo-widget widget--topic-modeling">
   <div class="neo-widget__header aoc-home">Topics</div>
 
   <div class="neo-widget__content neo-widget__content--indented">
     <md-list flex style="min-height:100% !important">
-      <md-list-item class="md-1-line" ng-repeat="topic in ['Topic Number One', 'Topic Number Two', 'Topic Number Three'] track by $index">
+      <md-list-item class="md-1-line" ng-repeat="topic in topics">
         <div class="md-list-item-text">
           <h4>{{ topic }}</h4>
         </div>

@@ -18,10 +18,11 @@ enum googleAiEventType {
 interface ISendMessageData {
   eventType: googleAiEventType;
 }
-
+ 
 interface IGoogleCcAiScope extends ng.IScope {
   isAysncRunning: number;
   conversationConfig: any;
+  workRequestId: any;
   messages: IMessage[];
   showAvatar: (item: IMessage, index: number, list: IMessage[]) => boolean;
   rowColumnHeight: number;
@@ -47,12 +48,12 @@ interface ICancelablePromise extends ng.IPromise<void> {
 
 const widgetComponent = (
   WidgetAPI: any,
-  $http: ng.IHttpService,
   $log: ng.ILogService,
-  $q: ng.IQService,
   $timeout: ng.ITimeoutService,
   dialogflowConfigUrl: any,
-  moment: any
+  moment: any,
+  transcriptAiService: any,
+  showAvatarService: any
 ) => {
   const widgetContainer = (
     scope: IGoogleCcAiScope,
@@ -65,7 +66,7 @@ const widgetComponent = (
     // hold current conversation configuration
     scope.conversationConfig = null;
     //promise for message polling
-    let aysncCallPromise: ICancelablePromise;
+    // let aysncCallPromise: ICancelablePromise;
     // to pass promise to Ajax
     let deferredAbort: ng.IDeferred<any>;
     scope.moment = moment;
@@ -76,28 +77,7 @@ const widgetComponent = (
     scope.customerImageUrl = `https://192.168.2.1/widget/googlecc-ai/assets/juani.png`;
     scope.automatedBotImageUrl = `https://192.168.2.1/widget/googlecc-ai/assets/bot.png`;
     scope.showAvatar = function (item, index, list) {
-      if (item.participantRole !== participantType.HUMAN_AGENT) {
-        if (index === 0) {
-          return true;
-        } else if (
-          index < list.length - 1 &&
-          item.participantRole !== list[index - 1].participantRole
-        ) {
-          return true;
-        } else if (
-          index < list.length - 1 &&
-          item.participantRole !== list[index + 1].participantRole &&
-          item.participant !== list[index - 1].participant
-        ) {
-          return true;
-        } else if (
-          index === list.length - 1 &&
-          item.participantRole !== list[index - 1].participantRole
-        ) {
-          return true;
-        }
-      }
-      return false;
+      return showAvatarService.showAvatar(item, index, list);
     };
 
     // notify to other widget
@@ -112,47 +92,21 @@ const widgetComponent = (
     };
 
     // interaction card data
-    api.onDataEvent("onInteractionEvent", function (data) {
+    api.onDataEvent("onInteractionEvent", async function (data) {
       $log.info("GoogleCC-AI:: onInteractionEvent: ", data);
       if (data.channel == "VOICE" && data.state == "ALERTING") {
-        //wait till ECC send configuration to chat engine
-        $timeout(function () {
-          $log.info(
-            "GoogleCC-AI:: Timeout completed, fetching widget configuration for voice channel."
-          );
-          const workRequestId = data.workRequestId;
-          const requestConfig: ng.IRequestConfig = scope.createHttpRequest(
-            dialogflowConfigUrl + "?workRequestId=" + workRequestId,
-            "GET"
-          );
-          $http(requestConfig).then(
-            function successCallback(response: any) {
-              // TODO: Are you sure response.data come as string ?!
-              $log.info(
-                "GoogleCC-AI:: Voice channel configuration: {}",
-                response.data
-              );
-              scope.conversationConfig = JSON.parse(response.data);
-              localStorage.setItem(
-                "widgetConfig",
-                JSON.stringify(scope.conversationConfig)
-              );
-              scope.loadConversation();
-              //update another widget to update the suggestions
-              scope.notifyToSuggestedResponseWidget(scope.conversationConfig);
-            },
-            function errorCallback(reason) {
-              $log.error(
-                "GoogleCC-AI:: Error! Couldn't load widget configuration for widget.",
-                reason
-              );
-            }
-          );
-        }, 5000);
+        await $timeout(function () {}, 5000);
+        $log.info(
+          "GoogleCC-AI:: Timeout completed, fetching widget configuration for voice channel."
+        );
+        scope.conversationConfig = await transcriptAiService.getConversationConfig(dialogflowConfigUrl, scope.workRequestId);
+        transcriptAiService.setWidgetConfig(scope.workRequestId, scope.conversationConfig)
+        scope.loadConversation();
+        scope.notifyToSuggestedResponseWidget(scope.conversationConfig);
       } else if (data.channel == "WEBCHAT") {
         $log.info("GoogleCC-AI:: loading configuration for WEBCHAT channel.");
         scope.conversationConfig = JSON.parse(
-          localStorage.getItem("widgetConfig")
+          transcriptAiService.getWidgetConfig(scope.workRequestId)
         );
       }
       // load conversation on browser refresh
@@ -185,10 +139,7 @@ const widgetComponent = (
           "GoogleCC-AI:: INIT_AGENT_HANDOFF, Initialized conversation configuration."
         );
         scope.conversationConfig = JSON.parse(data.customData);
-        localStorage.setItem(
-          "widgetConfig",
-          JSON.stringify(scope.conversationConfig)
-        );
+        transcriptAiService.setWidgetConfig(scope.workRequestId, scope.conversationConfig)
         scope.loadConversation();
         scope.notifyToSuggestedResponseWidget(scope.conversationConfig);
       }
@@ -201,224 +152,50 @@ const widgetComponent = (
     });
 
     // start polling conversation messages
-    scope.subscribToAsyncCtx = function () {
-      deferredAbort = $q.defer<any>();
-      const requestConfig: ng.IRequestConfig = {
-        method: "GET",
-        url: scope.conversationConfig.asyncSubscriptionUrl,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        timeout: deferredAbort.promise,
-        transformResponse: function (data, headers) {
-          let body: { messages?: IMessage[] };
-          try {
-            body = angular.fromJson(data);
-            if (body.messages && body.messages.length > 0) {
-              body.messages = body.messages.slice().reverse();
-              return body;
-            } else {
-              return { messages: [] };
-            }
-          } catch (error) {
-            return data;
-          }
-        }
-      };
-      aysncCallPromise = $http<{ messages?: IMessage[] }>(requestConfig).then(
-        function successCallback(response) {
-          if (response.status == 200) {
-            $log.info("GoogleCC-AI:: async chat messages received.");
-            var data = response.data;
-            if (data.messages && data.messages.length > 0) {
-              scope.messages = data.messages;
-            }
-            scope.notifyUpdateSuggestions();
-            scope.subscribToAsyncCtx();
-          }
-        },
-        function errorCallback(reason) {
-          if (reason.status === 410) {
-            $log.info(
-              "GoogleCC-AI:: subscribToAsyncCtx 410 Gone, client error response code indicates that access to the target resource is no longer available at the origin serve.",
-              reason
-            );
-          } else if (
-            reason.config &&
-            reason.config.timeout &&
-            reason.config.timeout.$$state &&
-            reason.config.timeout.$$state.value &&
-            reason.config.timeout.$$state.value ===
-              "subscribToAsyncCtx Call Abort"
-          ) {
-            //TODO: Diego- why this check is needed?
-            $log.info(
-              "GoogleCC-AI:: Async Subscribing to async context aborted",
-              reason
-            );
-            scope.subscribToAsyncCtx();
-          } else {
-            $log.error(
-              "GoogleCC-AI:: Async context failed!, Subscribing to async context again.",
-              reason
-            );
-            scope.subscribToAsyncCtx();
-          }
-        }
-      );
-      //augment promise to abort the Ajax call
-      aysncCallPromise.abort = function () {
-        deferredAbort.resolve("subscribToAsyncCtx Call Abort");
-        $log.info("GoogleCC-AI::abort: polling stop");
-      };
-    };
+    scope.subscribToAsyncCtx = async function () {
+      await setTimeout(() => {
+        
+      }, 1000);
+      const response = await transcriptAiService.getMessages(scope.conversationConfig.asyncSubscriptionUrl);
+      $log.info("GoogleCC-AI:: async chat messages received.");
+      if (response.messages && response.messages.length > 0) {
+        scope.messages = response.messages;
+      }
+      scope.notifyUpdateSuggestions();
+      // await scope.subscribToAsyncCtx();
+    }
 
     // complete dialogflow conversation when card destroyed
-    scope.endConversation = function () {
+    scope.endConversation = async function () {
       $log.info("GoogleCC-AI:: endConversation start.");
-
-      const requestConfig: ng.IRequestConfig = {
-        method: "POST",
-        url: scope.conversationConfig.completeConversationUrl,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      };
-
-      $http(requestConfig).then(
-        function successCallback(response) {
-          $log.info(
-            "GoogleCC-AI:: Conversation completed, API response data:",
-            response.data
-          );
-        },
-        function errorCallback(reason) {
-          $log.error(
-            "GoogleCC-AI:: Error! Error while completing conversation.",
-            reason
-          );
-        }
-      );
+      await transcriptAiService.endConversation(scope.conversationConfig.completeConversationUrl);
       // Abort Ajax polling
-      aysncCallPromise.abort();
+      // aysncCallPromise.abort();
     };
 
     //load conversation on escalation to agent
-    scope.loadConversation = function () {
-      $log.info(
-        "GoogleCC-AI:: loadConversation: Fetching conversation from URL:",
-        scope.conversationConfig.getConversationUrl
-      );
-      const requestConfig: ng.IRequestConfig = {
-        method: "GET",
-        url: scope.conversationConfig.getConversationUrl,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        transformResponse: function (data, headers) {
-          let body: { messages?: IMessage[] };
-          try {
-            body = angular.fromJson(data);
-            if (body.messages && body.messages.length > 0) {
-              body.messages = body.messages.slice().reverse();
-              return body;
-            } else {
-              return { messages: [] };
-            }
-          } catch (error) {
-            return data;
-          }
-        }
-      };
-
-      $http<{ messages?: IMessage[] }>(requestConfig).then(
-        function successCallback(
-          response: ng.IHttpResponse<{ messages?: IMessage[] }>
-        ) {
-          $log.info(
-            "GoogleCC-AI:: loadConversation response data:",
-            response.data
-          );
-          const data = response.data;
-          if (data.messages && data.messages.length > 0) {
-            scope.messages = data.messages;
-          }
-          if (scope.isAysncRunning == 0) {
-            scope.isAysncRunning++;
-            scope.subscribToAsyncCtx();
-          }
-        },
-        function errorCallback(reason) {
-          $log.error("GoogleCC-AI:: Error! Couldn't load conversation", reason);
-        }
-      );
+    scope.loadConversation = async function () {
+      const response = await transcriptAiService.loadConversation(scope.conversationConfig.getConversationUrl);
+      if (response.messages && response.messages.length > 0) {
+        scope.messages = response.messages;
+      }
+      if (scope.isAysncRunning == 0) {
+        scope.isAysncRunning++;
+        await scope.subscribToAsyncCtx();
+      }
     };
 
     scope.formMessage = {
       value: ""
     };
-    scope.submitFormData = function () {
-      if (
-        scope.formMessage.value !== "" &&
-        scope.formMessage.value.length > 0
-      ) {
-        const requestConfig: ng.IRequestConfig = scope.createHttpRequest(
-          scope.conversationConfig.sendMessageUrl + scope.formMessage.value,
-          "POST"
-        );
-        scope.formMessage = {
-          value: ""
-        };
-        $http(requestConfig).then(
-          function successCallback(response) {
-            $log.info(
-              "GoogleCC-AI:: POST message 200, response data:",
-              response.data
-            );
-          },
-          function errorCallback(reason) {
-            $log.error("GoogleCC-AI:: Error! Couldn't send message.", reason);
-          }
-        );
-      }
-    };
-
-    scope.createHttpRequest = (URL: string, httpMethod: string) => {
-      const requestConfig: ng.IRequestConfig = {
-        method: httpMethod,
-        url: URL,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        transformResponse: function (data, headers) {
-          let body: { messages?: IMessage[] };
-          try {
-            body = angular.fromJson(data);
-            if (body.messages && body.messages.length > 0) {
-              body.messages = body.messages.slice().reverse();
-              return body;
-            } else {
-              return data;
-            }
-          } catch (error) {
-            return data;
-          }
-        }
-      };
-      return requestConfig;
-    };
 
     // called when widget is destroyed
     element.on("$destroy", function () {
       $log.info("GoogleCC-AI:: widget destroyed");
+      transcriptAiService.removeWidgetConfig(scope.workRequestId);
       scope.endConversation();
       api.unregister();
       scope.$destroy();
-      localStorage.removeItem("widgetConfig");
     });
   };
 

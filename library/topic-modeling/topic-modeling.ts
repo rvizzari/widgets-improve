@@ -25,13 +25,13 @@ enum TopicModelingEventType {
   UPDATE_SUGGESTIONS = "UPDATE_SUGGESTIONS"
 }
 
-const TopicModelingWidgetComponent = (
+const topicModelingWidgetComponent = (
   WidgetAPI: any,
   $http: ng.IHttpService,
   $log: ng.ILogService,
   $mdDialog: ng.material.IDialogService
 ) => {
-  const TopicModelingWidgetContainer = (
+  const topicModelingWidgetContainer = (
     scope: ITopicModelingScope,
     element: JQLite,
     params: ng.IAttributes
@@ -107,10 +107,10 @@ const TopicModelingWidgetComponent = (
     scope: {},
     replace: true,
     template: template,
-    link: TopicModelingWidgetContainer
+    link: topicModelingWidgetContainer
   };
 };
 
 angular.module('56662337-767f-4852-ae64-70b4594b2384', [
   'core.services.WidgetAPI'
-]).directive('TopicModeling', TopicModelingWidgetComponent);
+]).directive('topicModeling', topicModelingWidgetComponent);
